@@ -1,0 +1,11 @@
+<h1>File list</h1>
+{% for file in filelist %}
+<p><a href={{url_for('file',file_id=file.id)}}> {{file.title}}</a></p>
+<p></p>
+{% endfor %}
+
+
+
+
+
+
