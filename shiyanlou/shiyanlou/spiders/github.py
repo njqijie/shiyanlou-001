@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+import scrapy
+from shiyanlou.items import RepoItem
+
+
+class RepoSpider(scrapy.Spider):
+	name = 'github'
+	start_urls = 'http://www.github.com/'
+	@property
+	def start_urls(self):
+		url_tmpl = 'https://www.github.com/shiyanlou?tab=repositories&page={}'
+		return (url_tmpl.format(i) for i in range(1, 5))
+	def parse(self, response):
+		for course in response.css('li.d-block'):
+			item = RepoItem()
+			item['name'] = course.css('div.d-inline-block a::text').re_first('\s*([-\w]+)\s*')
+			item['update_time'] = course.css('relative-time::attr(datetime)').extract_first()
+			course_url = response.urljoin(course.xpath('.//a[@itemprop="name codeRepository"]/@href').extract_first())
+			request = scrapy.Request(course_url, callback=self.parse_statistic)
+			request.meta['item'] = item
+			yield request
+	def parse_statistic(self, response):
+		item = response.meta['item']
+		list_s = response.xpath('//span[@class="num text-emphasized"]/text()').re('[^\d]*(\d+)[^\d]*')
+		item['commits']  = list_s[0]
+		item['branches'] = list_s[1]
+		item['releases'] = list_s[2]
+		yield item
