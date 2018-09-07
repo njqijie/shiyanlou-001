@@ -1,0 +1,29 @@
+import json
+import pandas as pd
+from matplotlib import pyplot as plt
+from pandas import Series,DataFrame
+
+
+def data_plot(file):
+
+	#times = 0
+	#minutes = 0
+	with open(file,'r') as json_file:
+		data = pd.read_json(json_file)
+		df = DataFrame(data)
+
+	fig = plt.figure()
+	ax = fig.add_subplot(1,1,1)
+	ax.set_title("StudyData")
+	ax.set_xlabel('User ID')
+	ax.set_ylabel('Study Time')
+	grouped = df.groupby(df['user_id']).sum()
+	ax.plot(grouped.index,grouped.minutes)
+	plt.show()
+				
+	
+if __name__ == '__main__':
+	file = '/home/shiyanlou/Code/user_study.json'
+	
+	data_plot(file)
+	
