@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for a,v in files_dict.items() %}
+        <span>{{a}}:{{v}}<br></span>
+    {% endfor %}
+{% endblock %}

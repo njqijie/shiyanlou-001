@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for a in file_list %}
+<p> {{a}} </p>
+	
+	
+    
+{% endblock %}
